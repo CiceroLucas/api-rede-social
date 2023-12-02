@@ -9,7 +9,12 @@ router.post("/create", upload.single("fotoPerfil"), userController.createUser);
 router.post("/login", userController.login);
 router.get("/list", authController.checkToken, userController.listUsers);
 router.get("/:id", authController.checkToken, userController.getUserById);
-router.put("/:id", authController.checkToken, userController.updateUserById);
+router.put(
+  "/:id",
+  upload.single("fotoPerfil"),
+  authController.checkToken,
+  userController.updateUserById
+);
 router.delete("/:id", authController.checkToken, userController.deleteUserById);
 
 module.exports = router;
