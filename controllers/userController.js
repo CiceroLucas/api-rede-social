@@ -94,13 +94,11 @@ exports.login = async (req, res) => {
       secret
     );
 
-    res
-      .status(200)
-      .json({
-        message: "Autenticação realizada com sucesso.",
-        token,
-        userId: user._id,
-      });
+    res.status(200).json({
+      message: "Autenticação realizada com sucesso.",
+      token,
+      userId: user._id,
+    });
   } catch (err) {
     console.log(err);
   }
@@ -152,17 +150,29 @@ exports.getUserById = async (req, res) => {
 exports.updateUserById = async (req, res) => {
   try {
     const userId = req.params.id;
-    const updatedUser = req.body;
+    const updatedUserData = req.body;
 
-    const user = await User.findByIdAndUpdate(userId, updatedUser, {
+    if (!Object.keys(updatedUserData).length) {
+      return res
+        .status(400)
+        .json({ error: "Nenhum dado de atualização fornecido." });
+    }
+
+    if (req.file) {
+      const fileBuffer = req.file.buffer;
+      updatedUserData.fotoPerfil = fileBuffer.toString("base64");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updatedUserData, {
       new: true,
+      select: "-senha -email -fotosPublicadas",
     });
 
-    if (!user) {
+    if (!updatedUser) {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    res.status(200).json(user);
+    res.status(200).json(updatedUser);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erro ao atualizar o usuário." });
