@@ -152,12 +152,6 @@ exports.updateUserById = async (req, res) => {
     const userId = req.params.id;
     const updatedUserData = req.body;
 
-    if (!Object.keys(updatedUserData).length) {
-      return res
-        .status(400)
-        .json({ error: "Nenhum dado de atualização fornecido." });
-    }
-
     if (req.file) {
       const fileBuffer = req.file.buffer;
       updatedUserData.fotoPerfil = fileBuffer.toString("base64");
