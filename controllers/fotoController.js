@@ -10,8 +10,10 @@ exports.createFoto = async (req, res) => {
     const { descricao } = req.body;
     const file = req.file;
 
-    if (!descricao || !file) {
-      return res.status(400).json({ error: "Campos obrigatórios ausentes na requisição." });
+    if (!file) {
+      return res
+        .status(400)
+        .json({ error: "Campos obrigatórios ausentes na requisição." });
     }
     let imagemBase64 = null;
 
@@ -35,7 +37,9 @@ exports.createFoto = async (req, res) => {
     res.status(201).json({ message: "Foto criada com sucesso." });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Erro ao criar a foto.", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Erro ao criar a foto.", details: err.message });
   }
 };
 
