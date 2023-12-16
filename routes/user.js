@@ -9,6 +9,8 @@ router.post("/create", upload.single("fotoPerfil"), userController.createUser);
 router.post("/login", userController.login);
 router.get("/list", authController.checkToken, userController.listUsers);
 router.get("/:id", authController.checkToken, userController.getUserById);
+router.get("/:nomeUsuario", authController.checkToken, userController.getUserByName);
+
 router.put(
   "/:id",
   upload.single("fotoPerfil"),
