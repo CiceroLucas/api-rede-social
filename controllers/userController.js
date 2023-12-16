@@ -123,6 +123,28 @@ exports.listUsers = async (req, res) => {
   }
 };
 
+// Controlador para buscar um usuário por ID
+exports.getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId, "-senha")
+      .select("-email")
+      .select("-fotosPublicadas");
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    const publicacoes = await Foto.countDocuments({ autor: userId });
+
+    const userWithPhotoCount = { ...user.toObject(), publicacoes };
+
+    res.status(200).json(userWithPhotoCount);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao buscar o usuário." });
+  }
+};
 
 // Controlador para atualizar um usuário por ID
 exports.updateUserById = async (req, res) => {
