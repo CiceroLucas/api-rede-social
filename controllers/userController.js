@@ -190,7 +190,7 @@ exports.deleteUserById = async (req, res) => {
   }
 };
 
-export const buscarUsuarioPorNome = async (req,res) => {
+exports.buscarUsuarioPorNome = async (req,res) => {
   try {
     const nomeProcurado = req.params.nome;
 
