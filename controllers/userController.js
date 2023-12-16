@@ -190,31 +190,30 @@ exports.deleteUserById = async (req, res) => {
   }
 };
 
-// Controlador para buscar um usuário por nome
-
-exports.getUserByName = async (req, res) => {
+async function buscarUsuarioPorNome(req, res) {
   try {
-    const nomeUsuario = req.params.nomeUsuario;
+    const nomeProcurado = req.params.nome;
 
-    console.log('Nome de usuário recebido:', nomeUsuario);
+    // Use o método find para pesquisar usuários com base no nome
+    const usuarioEncontrado = await User.findOne({ nome: nomeProcurado });
 
-    if (!nomeUsuario || nomeUsuario.trim() === "") {
-      return res.status(422).json({ message: "O nome de usuário é obrigatório." });
+    if (usuarioEncontrado) {
+      // Se o usuário for encontrado, retorna as informações
+      const resposta = {
+        fotoPerfil: usuarioEncontrado.fotoPerfil,
+        usuario: usuarioEncontrado.usuario,
+        nome: usuarioEncontrado.nome,
+      };
+      res.status(200).json(resposta);
+    } else {
+      // Se o usuário não for encontrado, retorna uma mensagem indicando isso
+      res.status(404).json({ mensagem: 'Usuário não encontrado' });
     }
-
-    const user = await User.findOne({ usuario: nomeUsuario }, "-senha")
-      .select("-email")
-      .select("-fotosPublicadas");
-
-    if (!user) {
-      return res.status(404).json({ error: "Usuário não encontrado." });
-    }
-
-    // Remova a contagem de fotos, conforme solicitado
-
-    res.status(200).json(user);
-  } catch (err) {
-    console.error('Erro ao buscar o usuário pelo nome:', err.message);
-    res.status(500).json({ error: "Erro ao buscar o usuário." });
+  } catch (error) {
+    // Se ocorrer algum erro durante a pesquisa, retorna um status de erro
+    console.error(error);
+    res.status(500).json({ mensagem: 'Erro interno do servidor' });
   }
-};
+}
+
+module.exports = { buscarUsuarioPorNome };
