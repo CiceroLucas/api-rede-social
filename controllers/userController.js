@@ -191,6 +191,7 @@ exports.deleteUserById = async (req, res) => {
 };
 
 // Controlador para buscar um usuário por nome
+
 exports.getUserByName = async (req, res) => {
   try {
     const nomeUsuario = req.params.nomeUsuario;
@@ -209,13 +210,11 @@ exports.getUserByName = async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    const publicacoes = await Foto.countDocuments({ autor: user._id });
+    // Remova a contagem de fotos, conforme solicitado
 
-    const userWithPhotoCount = { ...user.toObject(), publicacoes };
-
-    res.status(200).json(userWithPhotoCount);
+    res.status(200).json(user);
   } catch (err) {
     console.error('Erro ao buscar o usuário pelo nome:', err.message);
-    res.status(500).json({ error: "Erro ao buscar o usuário por nome." });
+    res.status(500).json({ error: "Erro ao buscar o usuário." });
   }
 };
