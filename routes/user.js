@@ -9,7 +9,7 @@ router.post("/create", upload.single("fotoPerfil"), userController.createUser);
 router.post("/login", userController.login);
 router.get("/list", authController.checkToken, userController.listUsers);
 router.get("/:id", authController.checkToken, userController.getUserById);
-router.get('/seach/:nome', userController.buscarUsuarioPorNome);
+router.get('/search/:nome', userController.buscarUsuarioPorNome);
 
 router.put(
   "/:id",
