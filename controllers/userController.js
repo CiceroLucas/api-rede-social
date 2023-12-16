@@ -216,6 +216,6 @@ exports.getUserByName = async (req, res) => {
     res.status(200).json(userWithPhotoCount);
   } catch (err) {
     console.error('Erro ao buscar o usuário pelo nome:', err.message);
-    res.status(500).json({ error: "Erro ao buscar o usuário." });
+    res.status(500).json({ error: "Erro ao buscar o usuário por nome." });
   }
 };
