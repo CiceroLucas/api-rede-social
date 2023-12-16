@@ -190,23 +190,21 @@ exports.deleteUserById = async (req, res) => {
   }
 };
 
-async function buscarUsuarioPorNome(req, res) {
+export const buscarUsuarioPorNome = async (req,res) => {
   try {
     const nomeProcurado = req.params.nome;
 
     // Use o método find para pesquisar usuários com base no nome
-    const usuarioEncontrado = await User.findOne({ nome: nomeProcurado });
+    const usuariosEncontrados = await User.find(
+      { nome: { $regex: new RegExp(nomeProcurado, 'i') } }, // O 'i' torna a busca case-insensitive
+      "_id usuario fotoPerfil"
+    );
 
-    if (usuarioEncontrado) {
-      // Se o usuário for encontrado, retorna as informações
-      const resposta = {
-        fotoPerfil: usuarioEncontrado.fotoPerfil,
-        usuario: usuarioEncontrado.usuario,
-        nome: usuarioEncontrado.nome,
-      };
-      res.status(200).json(resposta);
+    if (usuariosEncontrados.length > 0) {
+      // Se pelo menos um usuário for encontrado, retorna as informações
+      res.status(200).json(usuariosEncontrados);
     } else {
-      // Se o usuário não for encontrado, retorna uma mensagem indicando isso
+      // Se nenhum usuário for encontrado, retorna uma mensagem indicando isso
       res.status(404).json({ mensagem: 'Usuário não encontrado' });
     }
   } catch (error) {
@@ -214,6 +212,4 @@ async function buscarUsuarioPorNome(req, res) {
     console.error(error);
     res.status(500).json({ mensagem: 'Erro interno do servidor' });
   }
-}
-
-module.exports = { buscarUsuarioPorNome };
+};
